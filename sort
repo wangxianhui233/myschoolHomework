@@ -7,11 +7,19 @@ public class px {
             Scanner scanner=new Scanner(System.in);
             List lis=new ArrayList();
             boolean b=true;
+            boolean nostring=false;
             String s;
             while(b)
             {  s=scanner.next();
-                if(s.equals("a"))
-                break;
+                if(s.equals("aa"))
+                    break;
+                for (int i=0; i<s.length();i++)
+                if(Character.isDigit(s.charAt(i)))
+                {nostring=true;}
+                else
+                { nostring=false;
+                    System.out.println("请输入数字！"); break;}
+                if(nostring)
                 lis.add(s);
             }
            Integer[] aa=new Integer[lis.size()] ;
@@ -19,7 +27,6 @@ public class px {
           for( Iterator it=lis.iterator();it.hasNext();)
           {
              aa[n] = new Integer(it.next().toString()) ;n++;}
-            int a[]={3,44,38,5,47,15,36,26,27,2,46,4,19,50,48};
             //记录比较次数
             int count=0;
             //i=0,第一轮比较
