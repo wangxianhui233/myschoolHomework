@@ -1,0 +1,165 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : localhost_3306
+Source Server Version : 50710
+Source Host           : localhost:3306
+Source Database       : myschooltest
+
+Target Server Type    : MYSQL
+Target Server Version : 50710
+File Encoding         : 65001
+
+Date: 2022-05-28 12:53:12
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for apppage
+-- ----------------------------
+--在app中取得每个用户基本信息
+DROP TABLE IF EXISTS `apppage`;
+CREATE TABLE `apppage` (
+  `userIds` int(11) NOT NULL,
+  `homepage` varchar(255) DEFAULT NULL,
+  `Nearbymessages` varchar(255) DEFAULT NULL,
+  `Chatbox` varchar(255) DEFAULT NULL,
+  `accountID` int(12) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of apppage
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for itinerary
+-- ----------------------------
+--用户的备忘录功能
+DROP TABLE IF EXISTS `itinerary`;
+CREATE TABLE `itinerary` (
+  `itinerarytime` datetime DEFAULT NULL,
+  `userid` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of itinerary
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for userappmessage
+-- ----------------------------
+--通过id确定是那个用户发的信息
+DROP TABLE IF EXISTS `userappmessage`;
+CREATE TABLE `userappmessage` (
+  `userIDs` int(11) NOT NULL,
+  `usermessage` varchar(255) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `Mytripid` int(11) DEFAULT NULL,
+  `Mytrip` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of userappmessage
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for userfriend
+-- ----------------------------
+--好友功能一人有多个好友
+DROP TABLE IF EXISTS `userfriend`;
+CREATE TABLE `userfriend` (
+  `userid` int(11) DEFAULT NULL,
+  `userfriendsid` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of userfriend
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for users
+-- ----------------------------
+--用户的私人信息
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `userId` int(11) NOT NULL AUTO_INCREMENT,
+  `userName` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `usermoney` double(10,0) DEFAULT NULL,
+  `userGPS` varchar(255) DEFAULT NULL,
+  `usersupport` int(12) DEFAULT NULL,
+  `usercollection` int(12) DEFAULT NULL,
+  `accountID` int(12) DEFAULT NULL,
+  `Mytripid` int(8) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of users
+-- ----------------------------
+INSERT INTO `users` VALUES ('1', '威威', 'adm', null, null, null, null, null, null, null);
+INSERT INTO `users` VALUES ('2', 'd', 'a', null, null, null, null, null, null, null);
+INSERT INTO `users` VALUES ('3', 'w', 'w', null, null, null, null, null, null, null);
+
+-- ----------------------------
+-- Table structure for usersupport
+-- ----------------------------
+--用户的收藏
+DROP TABLE IF EXISTS `usersupport`;
+CREATE TABLE `usersupport` (
+  `uerid` int(11) NOT NULL,
+  `usersupport` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of usersupport
+-- ----------------------------
+
+-- ----------------------------
+-- View structure for v
+-- ----------------------------
+DROP VIEW IF EXISTS `v`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v` AS select `users`.`userName` AS `userName`,`users`.`password` AS `password`,`apppage`.`homepage` AS `homepage`,`apppage`.`Nearbymessages` AS `Nearbymessages`,`apppage`.`Chatbox` AS `Chatbox`,`apppage`.`accountID` AS `accountID`,`itinerary`.`itinerarytime` AS `itinerarytime`,`userappmessage`.`usermessage` AS `usermessage`,`userappmessage`.`date` AS `date`,`userappmessage`.`Mytripid` AS `Mytripid`,`userappmessage`.`Mytrip` AS `Mytrip`,`userfriend`.`userfriendsid` AS `userfriendsid`,`userfriend`.`userid` AS `userid`,`usersupport`.`usersupport` AS `usersupport` from (((((`users` join `apppage` on((`users`.`userId` = `apppage`.`userIds`))) join `itinerary` on((`users`.`userId` = `itinerary`.`userid`))) join `userappmessage` on((`users`.`userId` = `userappmessage`.`userIDs`))) join `userfriend` on((`users`.`userId` = `userappmessage`.`userIDs`))) join `usersupport` on((`users`.`userId` = `usersupport`.`uerid`))) ;
+
+-- ----------------------------
+-- Procedure structure for adduser
+-- ----------------------------
+--注册用户
+DROP PROCEDURE IF EXISTS `adduser`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `adduser`(IN `addname` varchar(255),IN `addpwd` varchar(255))
+BEGIN
+insert into users (`userName`,`password`)VALUES(addname,addpwd);
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for login
+-- ----------------------------
+--通过用户名和密码查询是否有这条数据
+DROP PROCEDURE IF EXISTS `login`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `login`(IN `uname` varchar(255),IN `upwd` varchar(255))
+BEGIN 
+
+	select * from users where userName=uname and `password`=upwd ;
+
+END
+;;
+DELIMITER ;
+
+-- ----------------------------
+-- Procedure structure for userinfo
+-- ----------------------------
+--通过登录返回的userid查询所有信息
+DROP PROCEDURE IF EXISTS `userinfo`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `userinfo`(INOUT `n` int)
+BEGIN
+select userName,time from users  WHERE  userId=n;
+END
+;;
+DELIMITER ;
