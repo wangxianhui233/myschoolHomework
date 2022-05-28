@@ -1,0 +1,78 @@
+#include
+
+#include
+
+using namespace std;
+
+queue x;
+
+queue y;
+
+int m, n, opx, opy, edx, edy, f[110][110];
+
+int bfs()
+
+{
+if((x.empty()) || (y.empty()))
+
+{
+cout<
+
+exit(0);
+
+}
+
+int x1=x.front(),y1=y.front();
+
+x.pop();
+
+y.pop();
+
+if((x1==edx) && (y1==edy))
+
+{
+cout<
+
+exit(0);
+
+}
+
+if((f[x1][y1]==0) && (x1=0) && (y1=0))
+
+{
+f[x1][y1]=1;
+
+x.push(x1+2);
+
+y.push(y1-1);
+
+x.push(x1+2);
+
+y.push(y1+1);
+
+x.push(x1+1);
+
+y.push(y1+2);
+
+x.push(x1+1);
+
+y.push(y1-2);
+
+}
+
+bfs();
+
+}
+
+int main()
+
+{
+cin>>n>>m>>opx>>opy>>edx>>edy;
+
+x.push(opx);
+
+y.push(opy);
+
+bfs();
+
+}
